@@ -4,6 +4,7 @@
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import numpy as np
+import zipfile
 from sklearn.ensemble import IsolationForest
 
 app = Flask(__name__)
@@ -14,7 +15,10 @@ print("Energy Anomaly Detection - Starting Server")
 print("=" * 50)
 
 print("\n[1/4] Loading dataset...")
-df = pd.read_csv("household_power_consumption.txt", sep=";", na_values="?")
+with zipfile.ZipFile("household_power_consumption.zip") as z:
+    with z.open("household_power_consumption.txt") as f:
+        df = pd.read_csv(f, sep=";", na_values="?")
+
 df = df[['Date', 'Time', 'Global_active_power']].dropna()
 print(f"      Loaded {len(df):,} rows")
 
@@ -81,7 +85,6 @@ def stats():
 @app.route('/api/timeseries')
 def timeseries():
     """Time series data (sampled for performance)"""
-    # Sample every 4th point (33k → ~8k points, faster rendering)
     sampled = result.iloc[::4]
     data = [{
         'time': idx.strftime('%Y-%m-%d %H:%M'),
@@ -108,11 +111,10 @@ def distribution():
     """Distribution data for histogram"""
     normal_vals = result[result['Status'] == 'Normal']['Energy_Consumption'].tolist()
     anomaly_vals = result[result['Status'] == 'Anomaly']['Energy_Consumption'].tolist()
-    
-    # Sample to reduce payload
+
     normal_sampled = [round(float(v), 3) for v in normal_vals[::5]]
     anomaly_sampled = [round(float(v), 3) for v in anomaly_vals]
-    
+
     return jsonify({
         'normal': normal_sampled,
         'anomaly': anomaly_sampled
@@ -124,10 +126,10 @@ def ask():
     """QA system"""
     data = request.get_json()
     q = data.get('question', '').lower().strip()
-    
+
     if not q:
         answer = "Please ask a question. Type 'help' for options."
-    
+
     elif 'help' in q:
         answer = ("Available questions:\n"
                   "• total — Total readings\n"
@@ -137,13 +139,13 @@ def ask():
                   "• anomalies — Detected anomalies\n"
                   "• status — Overall status\n"
                   "• show anomalies — List top anomalies")
-    
+
     elif 'total' in q or 'how many' in q:
         answer = f"Total readings: {total:,}"
-    
+
     elif 'normal' in q and 'show' not in q:
         answer = f"Normal readings: {normal_count:,}"
-    
+
     elif 'anomal' in q or 'abnormal' in q:
         if 'show' in q or 'list' in q:
             top = result[result['Status'] == 'Anomaly'].head(5)
@@ -155,33 +157,33 @@ def ask():
             answer = f"Anomaly percentage: {anomaly_count/total*100:.2f}%"
         else:
             answer = f"Detected anomalies: {anomaly_count:,} ({anomaly_count/total*100:.2f}%)"
-    
+
     elif 'average' in q or 'mean' in q:
         avg = result['Energy_Consumption'].mean()
         answer = f"Average consumption: {avg:.3f} kW"
-    
+
     elif 'maximum' in q or 'highest' in q or 'max' in q:
         mx = result['Energy_Consumption'].max()
         peak_time = result['Energy_Consumption'].idxmax()
         answer = f"Maximum consumption: {mx:.3f} kW\nPeak at: {peak_time.strftime('%Y-%m-%d %H:%M')}"
-    
+
     elif 'minimum' in q or 'lowest' in q or 'min' in q:
         mn = result['Energy_Consumption'].min()
         low_time = result['Energy_Consumption'].idxmin()
         answer = f"Minimum consumption: {mn:.3f} kW\nLowest at: {low_time.strftime('%Y-%m-%d %H:%M')}"
-    
+
     elif 'status' in q or 'condition' in q:
         answer = (f"Status:\n"
                   f"  • Total: {total:,}\n"
                   f"  • Normal: {normal_count:,}\n"
                   f"  • Anomalies: {anomaly_count:,} ({anomaly_count/total*100:.2f}%)")
-    
+
     elif 'show normal' in q:
         answer = f"Normal readings: {normal_count:,} (first 5 shown in CSV)"
-    
+
     else:
         answer = "Sorry, I don't understand. Type 'help' for available options."
-    
+
     return jsonify({'answer': answer})
 
 

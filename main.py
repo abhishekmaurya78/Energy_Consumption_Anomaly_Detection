@@ -5,13 +5,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import IsolationForest
+import zipfile
 
-# 2. Load electricity dataset
-df = pd.read_csv(
-    "household_power_consumption.txt",
-    sep=";",
-    na_values="?"
-)
+# 2. Load electricity dataset (from zip)
+with zipfile.ZipFile("household_power_consumption.zip") as z:
+    with z.open("household_power_consumption.txt") as f:
+        df = pd.read_csv(f, sep=";", na_values="?")
 
 # 3. Select required columns
 df = df[['Date', 'Time', 'Global_active_power']]
@@ -140,10 +139,10 @@ def ask_question():
 result.to_csv("results.csv")
 print("Results saved to results.csv")
 
-# 15. Start chatbot
+# 16. Start chatbot
 ask_question()
 
-# 16. Visualize results
+# 17. Visualize results
 plt.figure(figsize=(12, 5))
 
 plt.plot(
