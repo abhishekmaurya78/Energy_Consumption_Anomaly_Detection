@@ -5,12 +5,12 @@
 ### with User Question Answering System
 
 [![Python](https://img.shields.io/badge/Python-3.14-blue?style=for-the-badge&logo=python)](https://python.org)
-[![Flask](https://img.shields.io/badge/Flask-3.0-black?style=for-the-badge&logo=flask)](https://flask.palletsprojects.com)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5-orange?style=for-the-badge&logo=scikit-learn)](https://scikit-learn.org)
 [![Plotly](https://img.shields.io/badge/Plotly-5.24-3F4F75?style=for-the-badge&logo=plotly)](https://plotly.com)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-An intelligent system that detects abnormal electricity consumption patterns in household data using **Isolation Forest** algorithm, with an interactive **Question Answering chatbot** powered by a modern Flask web interface.
+An intelligent system that detects abnormal electricity consumption patterns in household data using **Isolation Forest** algorithm, with an interactive **Question Answering chatbot** powered by a modern FastAPI web interface.
 
 [Features](#-features) • [Demo](#-demo) • [Installation](#-installation) • [Usage](#-usage) • [Results](#-results)
 
@@ -127,23 +127,23 @@ cd Energy_Consumption_Anomaly_Detection
 
 pip install -r requirements.txt
 
-**3. Run the Flask application**
+**3. Run the FastAPI application**
 
-python app.py
+uvicorn app:app --reload
 
 **4. Open in browser**
 
-http://localhost:5000
+http://127.0.0.1:8000
 
 ---
 
 ## 💻 Usage
 
-### Web Dashboard (Flask)
+### Web Dashboard (FastAPI)
 
-python app.py
+uvicorn app:app --reload
 
-Opens at http://localhost:5000
+Opens at http://127.0.0.1:8000
 
 ### CLI Version
 
@@ -194,7 +194,7 @@ python main.py
 | **Pandas** | Data manipulation |
 | **NumPy** | Numerical operations |
 | **Scikit-learn** | Isolation Forest model |
-| **Flask** | Web backend |
+| **FastAPI** | Web backend |
 | **Plotly** | Interactive visualizations |
 | **HTML/CSS/JS** | Frontend |
 
@@ -204,12 +204,13 @@ python main.py
 
 Energy_Consumption_Anomaly_Detection/
 │
-├── app.py                            # Flask backend
+├── app.py                            # FastAPI backend
 ├── main.py                           # CLI version
 ├── household_power_consumption.zip   # Dataset (compressed)
 ├── results.csv                       # Detected anomalies
 ├── anomaly_plot.png                  # Output graph
 ├── requirements.txt                  # Dependencies
+├── vercel.json                       # Vercel deployment config
 ├── README.md                         # Documentation
 ├── LICENSE                           # MIT License
 │
@@ -265,7 +266,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 - [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php) for the dataset
 - [Scikit-learn](https://scikit-learn.org/) for Isolation Forest
-- [Flask](https://flask.palletsprojects.com/) for the web framework
+- [FastAPI](https://fastapi.tiangolo.com/) for the web framework
 - [Plotly](https://plotly.com/) for interactive visualizations
 
 ---
