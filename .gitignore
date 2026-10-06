@@ -2,8 +2,7 @@
 __pycache__/
 *.pyc
 *.pyo
-venv/
-env/
+*.pyd
 
 # OS
 .DS_Store
