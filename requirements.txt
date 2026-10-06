@@ -1,0 +1,21 @@
+# Energy Consumption Anomaly Detection
+# Requirements File
+
+# Core Data Processing
+pandas==2.2.0
+numpy==1.26.4
+
+# Machine Learning
+scikit-learn==1.5.0
+
+# Visualization
+matplotlib==3.9.0
+plotly==5.24.0
+
+# Web Framework (Flask frontend)
+flask==3.0.0
+gunicorn==21.2.0
+
+# Utilities
+python-dateutil==2.9.0
+pytz==2024.2
